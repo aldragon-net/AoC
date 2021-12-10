@@ -19,9 +19,9 @@ for i in range(len(lines)):
         else:
             k = 0
         if i+1 <= 100:
-            l = i+1
+            L = i+1
         else:
-            l = 100
+            L = 100
         if j-1 >= 0:
             m = j-1
         else:
@@ -29,24 +29,25 @@ for i in range(len(lines)):
         if j+1 <= 100:
             n = j+1
         else:
-            n = 1000 
-        search = field[k:l+1, m:n+1]
+            n = 100 
+        search = field[k:L+1, m:n+1]
         if field[i, j] == search.min():
             sum += field[i, j] + 1
             basins.append((i, j))
-print(sum)
+print(int(sum))
+
 
 def scan_basin(basin):
-    points = {basin,}
+    points = {basin, }
     while True:
         added = []
         for point in points:
             x, y = point
             for i in [-1, 1]:
                 if 0 <= (x+i) <= 99 and 0 <= (y+i) <= 99:
-                    if ((x+i, y) not in points) and field[x+i,y] != 9:
+                    if ((x+i, y) not in points) and field[x+i, y] != 9:
                         added.append((x+i, y))
-                    if ((x, y+i) not in points) and field[x,y+i] != 9:
+                    if ((x, y+i) not in points) and field[x, y+i] != 9:
                         added.append((x, y+i))                         
         if added == []:
             break
@@ -54,6 +55,7 @@ def scan_basin(basin):
             for point in added:
                 points.add(point)
     return len(points)
+
 
 lengths = []
 for basin in basins:
