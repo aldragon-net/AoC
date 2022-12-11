@@ -29,6 +29,6 @@ for line in lines:
 
 print(summ)
 for i, char in enumerate(screen):
-    if (i) % 40 == 0:
+    if i % 40 == 0:
         print()
     print(char, end='')
