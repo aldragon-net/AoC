@@ -1,4 +1,4 @@
-TEST = True
+TEST = False
 filename = 'test-2024-16.txt' if TEST else 'input-2024-16.txt'
 with open(filename, 'r') as f:
     lines = f.readlines()
@@ -37,7 +37,10 @@ while True:
     if not positions:
         break
 
-best_spots = set(finish_pos)
+print(scores[finish_pos[1]][finish_pos[0]])
+
+best_spots = set()
+best_spots.add((finish_pos[0], finish_pos[1]))
 to_trace = []
 for n_dir, direction in enumerate(directions):
     dx, dy = direction
@@ -45,17 +48,42 @@ for n_dir, direction in enumerate(directions):
         to_trace.append((n_dir, (finish_pos[0]-dx, finish_pos[1]-dy)))
         best_spots.add((finish_pos[0]-dx, finish_pos[1]-dy))
 
-
-
 while True:
     position = to_trace.pop()
+    turnpoint = False
     dir_num, coords = position
     x, y = coords
-    for dir_change in range(-1, 2):
+
+    for dir_change in [-1, 1]:
         dx, dy = directions[(dir_num + dir_change) % 4]
-        if scores[y-dy][x-dx] == scores[y][x] - 1 or scores[y-dy][x-dx] == scores[y][x] - 1001 or scores[y-dy][x-dx] == scores[y][x] + 999:
+        if scores[y-dy][x-dx] == scores[y][x] - 1001:
             to_trace.append(((dir_num + dir_change) % 4, (x-dx, y-dy)))
             best_spots.add((x-dx, y-dy))
+            # turnpoint = True
+        if scores[y-dy][x-dx] == scores[y][x] - 2001:
+            to_trace.append((dir_num, (x-dx, y-dy)))
+            to_trace.append(((dir_num + 2) % 4, (x-dx, y-dy)))
+            best_spots.add((x-dx, y-dy))
+            # turnpoint = True
+    
+    dx, dy = directions[dir_num]
+
+    if scores[y-dy][x-dx] == scores[y][x] - 1001:
+        to_trace.append(((dir_num+1) % 4, (x-dx, y-dy)))
+        to_trace.append(((dir_num-1) % 4, (x-dx, y-dy)))
+        to_trace.append((dir_num, (x-dx, y-dy)))
+        best_spots.add((x-dx, y-dy))
+        # turnpoint = True
+
+    if scores[y-dy][x-dx] == scores[y][x] - 1 or scores[y-dy][x-dx] == scores[y][x] + 999:
+        to_trace.append((dir_num, (x-dx, y-dy)))
+        best_spots.add((x-dx, y-dy))
+
+    # print(to_trace)
+    # print(best_spots)
+    # print()
+    # input()
+    
     if not to_trace:
         break
 
