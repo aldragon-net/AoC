@@ -11,13 +11,19 @@ with open(filename, 'r') as f:
 
 output = []
 
+
 def to_output(value):
     output.append(value)
+
 
 def literal(operand):
     return operand
 
+
 def combo(operand):
+    global reg_A
+    global reg_B
+    global reg_C
     if 0 <= operand <= 3:
         return operand
     if operand == 4:
@@ -26,7 +32,8 @@ def combo(operand):
         return reg_B
     if operand == 6:
         return reg_C
-    
+
+
 def operator(opcode, operand):
     global reg_A
     global reg_B
@@ -50,45 +57,50 @@ def operator(opcode, operand):
         reg_B = reg_A // (2 ** combo(operand))
     if opcode == 7:  # cdv
         reg_C = reg_A // (2 ** combo(operand))
-    position += 2    
+    position += 2
 
-# while True:
-#     if position > len(program) - 1:
-#         break
-#     opcode = program[position]
-#     operand = program[position+1]
-#     operator(opcode, operand)
 
-# print(f'A = {reg_A} | B = {reg_B} | C = {reg_C}')
-# print(','.join([str(x) for x in output]))
-
-def compare(output, program):
-    return ''.join([str(x) for x in output]) == ''.join([str(x) for x in program])
-
-init_A = 0
+reg_A, reg_B, reg_C = init_A, init_B, init_C
 while True:
-    position = 0
-    reg_A, reg_B, reg_C = init_A, init_B, init_C
-    output = []
-    while True:
-        if position > len(program) - 1:
-            break
-        opcode = program[position]
-        operand = program[position+1]
-        operator(opcode, operand)
-        if output:
-            if output[0] != program[0]:
-                break
-    if compare(output, program) == True:
+    if position > len(program) - 1:
         break
-    init_A += 1
+    opcode = program[position]
+    operand = program[position+1]
+    operator(opcode, operand)
 
-print(f'repoduced at init_A = {init_A}')
+print(f'A = {reg_A} | B = {reg_B} | C = {reg_C}')
+print(','.join([str(x) for x in output]))
 
-# reverse:
-   reg_b = output
-   reg_b = reg_b ^ 7
+# def compare(output, program):
+#     return ''.join([str(x) for x in output]) == ''.join([str(x) for x in program])
 
-   reg_b = reg_b ^ reg_c
+next_As = [0]
+for value in program[::-1]:
+    new_next_As = []
+    for next_A in next_As:
+        print(f'searching for output "{value}" and next_A = {next_A}:')
+        found = False
+        for init_A in range(next_A * 8, (next_A + 1) * 8):
+            found = False
+            position = 0
+            reg_A, reg_B, reg_C = init_A, init_B, init_C
+            output = []
+            while True:
+                if position > len(program) - 1:
+                    break
+                opcode = program[position]
+                operand = program[position+1]
+                operator(opcode, operand)
+                if output:
+                    break
+            if output[0] == value:
+                print(f'A = {init_A} provides output {value} and next_A = {next_A}')
+                new_next_As.append(init_A)
+                found = True
+        if not found:
+            print('not found')
+    next_As = new_next_As
+    print(f'will consider As: {next_As} \n')
 
-   reg_a = reg_c * 32 + reg_b
+next_As.sort()
+print(f'minimal A is: {next_As[0]}')
