@@ -38,7 +38,6 @@ for i in range(len(lines[0])-2, -1, -1):
     if number[-1] == '+' or number[-1] == '*':
         operator = number[-1]
         operands.append(int(number[:-1]))
-        print(operands)
         if operator == '+':
             total += sum(operands)
         if operator == '*':

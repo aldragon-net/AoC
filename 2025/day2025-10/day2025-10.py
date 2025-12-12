@@ -1,6 +1,7 @@
 import numpy as np
+import scipy as sp
 
-TEST = True
+TEST = False
 filename = 'test-2025-10.txt' if TEST else 'input-2025-10.txt'
 with open(filename, 'r') as f:
     lines = f.readlines()
@@ -66,4 +67,24 @@ for line in lines:
     jolting = np.array([int(x) for x in config[-1][1:-1].split(',')])
     machines.append((arrbuttons, jolting))
 
-print(machines)
+
+def min_press(machine):   
+    buttons, jolting = machine
+    buttons = np.array(buttons)
+    result = sp.optimize.linprog([1]*len(buttons),
+                                 A_eq=buttons.T,
+                                 b_eq=jolting,
+                                 bounds=(0, None),
+                                 method="highs",
+                                 integrality=1)
+    return round(result.fun)
+
+
+total = 0
+for i, machine in enumerate(machines):
+    value = min_press(machine)
+    print(i, value)
+    total += value
+
+
+print('total:', total)
