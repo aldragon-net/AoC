@@ -66,4 +66,19 @@ for line in lines:
     jolting = np.array([int(x) for x in config[-1][1:-1].split(',')])
     machines.append((arrbuttons, jolting))
 
-print(machines)
+
+def min_presses(buttons, jolting):
+    buttons = np.array(buttons).T
+    print(buttons)
+    print(np.linalg.pinv(buttons))
+    print(np.dot(np.linalg.pinv(buttons), jolting))
+    pass
+
+
+total = 0
+for machine in machines:
+    buttons, jolting = machine
+    hash = {}
+    moves = min_presses(buttons, jolting)
+print('total:', total)
+
