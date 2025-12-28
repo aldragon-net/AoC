@@ -68,10 +68,9 @@ maps.append(Map(maplines))
 seeds = [int(x) for x in lines[0].split(':')[1].split()]
 locations = []
 for seed in seeds:
-    value = seed
     for map in maps:
-        value = map.convert(value)
-    locations.append(value)
+        seed = map.convert(seed)
+    locations.append(seed)
 
 locations.sort()
 print(locations[0])
